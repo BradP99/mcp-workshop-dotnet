@@ -93,7 +93,7 @@ public static class MonkeyHelper
     /// <summary>
     /// Returns all available monkeys.
     /// </summary>
-    public static List<Monkey> GetMonkeys() => _monkeys;
+    public static IReadOnlyList<Monkey> GetMonkeys() => _monkeys.AsReadOnly();
 
     /// <summary>
     /// Returns a random monkey from the collection.

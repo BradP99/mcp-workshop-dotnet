@@ -5,11 +5,11 @@ namespace MyMonkeyApp;
 /// </summary>
 public class Monkey
 {
-    public string Name { get; set; } = string.Empty;
-    public string Location { get; set; } = string.Empty;
-    public string Details { get; set; } = string.Empty;
-    public string Image { get; set; } = string.Empty;
-    public int Population { get; set; }
+    public string Name { get; init; } = string.Empty;
+    public string Location { get; init; } = string.Empty;
+    public string Details { get; init; } = string.Empty;
+    public string Image { get; init; } = string.Empty;
+    public int Population { get; init; }
 
     public override string ToString() =>
         $"{Name} ({Location})";
