@@ -1,6 +1,7 @@
 using MyMonkeyApp;
 
 DisplayBanner();
+DisplayRandomMonkeyArt();
 
 var running = true;
 while (running)
@@ -12,22 +13,25 @@ while (running)
     {
         case "1":
             ListAllMonkeys();
+            PauseForContinue();
             break;
         case "2":
             GetMonkeyByName();
+            PauseForContinue();
             break;
         case "3":
             GetRandomMonkey();
+            PauseForContinue();
             break;
-        case "q":
-        case "Q":
+        case "4":
             running = false;
             Console.WriteLine("\n🐒 Goodbye! Thanks for visiting the Monkey App! 🐒\n");
             break;
         default:
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("\n❌ Invalid option. Please enter 1, 2, 3, or q.\n");
+            Console.WriteLine("\n❌ Invalid option. Please enter 1, 2, 3, or 4.\n");
             Console.ResetColor();
+            PauseForContinue();
             break;
     }
 }
@@ -53,14 +57,14 @@ static void DisplayBanner()
 static void DisplayMenu()
 {
     Console.ForegroundColor = ConsoleColor.Cyan;
-    Console.WriteLine("╔══════════════════════════════════╗");
-    Console.WriteLine("║       🐒 MONKEY MENU 🐒         ║");
-    Console.WriteLine("╠══════════════════════════════════╣");
-    Console.WriteLine("║  1. List all monkeys             ║");
-    Console.WriteLine("║  2. Get monkey by name           ║");
-    Console.WriteLine("║  3. Pick a random monkey         ║");
-    Console.WriteLine("║  q. Quit                         ║");
-    Console.WriteLine("╚══════════════════════════════════╝");
+    Console.WriteLine("+----------------------------------+");
+    Console.WriteLine("|           MONKEY MENU            |");
+    Console.WriteLine("+----------------------------------+");
+    Console.WriteLine("| 1. List all monkeys              |");
+    Console.WriteLine("| 2. Get details by name           |");
+    Console.WriteLine("| 3. Get a random monkey           |");
+    Console.WriteLine("| 4. Exit app                      |");
+    Console.WriteLine("+----------------------------------+");
     Console.ResetColor();
     Console.Write("\nSelect an option: ");
 }
@@ -69,9 +73,10 @@ static void ListAllMonkeys()
 {
     var monkeys = MonkeyHelper.GetMonkeys();
     Console.WriteLine();
+    DisplayRandomMonkeyArt();
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine($"{"Name",-25} {"Location",-30} {"Population",10}");
-    Console.WriteLine(new string('─', 67));
+    Console.WriteLine(new string('-', 67));
     Console.ResetColor();
 
     foreach (var monkey in monkeys)
@@ -98,6 +103,7 @@ static void GetMonkeyByName()
         return;
     }
 
+    DisplayRandomMonkeyArt();
     DisplayMonkeyDetails(monkey);
 }
 
@@ -117,6 +123,7 @@ static void GetRandomMonkey()
     Console.WriteLine("\n🎲 Random monkey selected!");
     Console.ResetColor();
 
+    DisplayRandomMonkeyArt();
     DisplayMonkeyDetails(monkey);
     Console.ForegroundColor = ConsoleColor.DarkGray;
     Console.WriteLine($"  (Random picks so far: {MonkeyHelper.GetRandomAccessCount()})\n");
@@ -126,17 +133,82 @@ static void GetRandomMonkey()
 static void DisplayMonkeyDetails(Monkey monkey)
 {
     Console.WriteLine();
+    const int innerWidth = 45;
+    var title = $"{monkey.Image} {monkey.Name}";
+    var location = $"Location: {monkey.Location}";
+    var population = $"Population: {monkey.Population:N0}";
+
     Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.WriteLine("  ╭─────────────────────────────────────────╮");
-    Console.WriteLine($"  │  {monkey.Image} {monkey.Name,-38} │");
-    Console.WriteLine("  ├─────────────────────────────────────────┤");
+    Console.WriteLine($"+{new string('-', innerWidth)}+");
+    Console.WriteLine($"| {TruncateAndPad(title, innerWidth - 2)} |");
+    Console.WriteLine($"+{new string('-', innerWidth)}+");
     Console.ResetColor();
-    Console.WriteLine($"  │  Location:   {monkey.Location,-27} │");
-    Console.WriteLine($"  │  Population: {monkey.Population,-27:N0} │");
+    Console.WriteLine($"| {TruncateAndPad(location, innerWidth - 2)} |");
+    Console.WriteLine($"| {TruncateAndPad(population, innerWidth - 2)} |");
     Console.ForegroundColor = ConsoleColor.Yellow;
-    Console.WriteLine("  ╰─────────────────────────────────────────╯");
+    Console.WriteLine($"+{new string('-', innerWidth)}+");
     Console.ResetColor();
     Console.ForegroundColor = ConsoleColor.DarkCyan;
     Console.WriteLine($"\n  {monkey.Details}\n");
     Console.ResetColor();
+}
+
+static string TruncateAndPad(string value, int width)
+{
+    if (string.IsNullOrEmpty(value))
+    {
+        return new string(' ', width);
+    }
+
+    if (value.Length > width)
+    {
+        if (width <= 3)
+        {
+            return value[..width];
+        }
+
+        return value[..(width - 3)] + "...";
+    }
+
+    return value.PadRight(width);
+}
+
+static void DisplayRandomMonkeyArt()
+{
+    string[] monkeyArts =
+    [
+                @"  .-""""-.
+ / .===. \
+ \/ 6 6 \/
+ ( \___/ )
+___ooo__V__ooo___",
+                @" .=""""=.
+/ _  _ \
+|  d  b  |
+\   /\   /
+ '.\__/.''
+ _/    \_",
+                @".-""-.   .-""-.
+/    |___|    \
+;  O  /   \  O  ;
+|    |  .  |    |
+;  O  \___/  O  ;
+ \    /   \    /
+    '-./_____\.-'"
+    ];
+
+    var art = monkeyArts[Random.Shared.Next(monkeyArts.Length)];
+    Console.ForegroundColor = ConsoleColor.DarkYellow;
+    Console.WriteLine();
+    Console.WriteLine(art);
+    Console.ResetColor();
+}
+
+static void PauseForContinue()
+{
+    Console.ForegroundColor = ConsoleColor.DarkGray;
+    Console.Write("Press Enter to continue...");
+    Console.ResetColor();
+    Console.ReadLine();
+    Console.WriteLine();
 }
